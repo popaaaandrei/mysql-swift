@@ -70,7 +70,29 @@ public struct SQLDate {
                     return
                 }
             }
+        case 10:
+            // YYYY-MM-DD
+            let chars:[Character] = Array(sqlDate.characters)
+            if let year = Int(String(chars[0...3])),
+                let month = Int(String(chars[5...6])),
+                let day = Int(String(chars[8...9])),
+                year > 0 && day > 0 && month > 0 {
+                var comp = DateComponents()
+                comp.year = year
+                comp.month = month
+                comp.day = day
+                comp.hour = 0
+                comp.minute = 0
+                comp.second = 0
+                let cal = SQLDateCalendar.calendar(forTimezone: timeZone)
+                if let date = cal.date(from :comp) {
+                    self.timeInterval = date.timeIntervalSince1970
+                    return
+                }
+            }
+            
         case 19:
+            // YYYY-MM-DD HH:MM:SS
             let chars:[Character] = Array(sqlDate.characters)
             if let year = Int(String(chars[0...3])),
                 let month = Int(String(chars[5...6])),
